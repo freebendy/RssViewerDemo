@@ -32,12 +32,12 @@ public class StartUpActivity extends Activity {
         mDownloadReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.v(LOG_TAG, "mDownloadReceiver.onReceive");
+                String action = intent.getAction();
+                Log.v(LOG_TAG, "mDownloadReceiver.onReceive: " + action);
 
-                if (intent.getAction().equals(RSSDownLoadService.ACTION_DOWMLOAD_SUCCESS)) {
+                if (action.equals(RSSDownLoadService.ACTION_DOWMLOAD_SUCCESS)) {
                     Toast.makeText(StartUpActivity.this, R.string.dl_finished, Toast.LENGTH_SHORT).show();
-                } else if (intent.getAction().equals(RSSDownLoadService.ACTION_DOWMLOAD_FAILED)) {
-                    Log.v(LOG_TAG, "mDownloadReceiver.onReceive: Failed");
+                } else if (action.equals(RSSDownLoadService.ACTION_DOWMLOAD_FAILED)) {
                     showDialog(DIALOG_DL_FAILED_ID);
                 }
             }

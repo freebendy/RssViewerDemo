@@ -30,6 +30,16 @@ public class RSSDownLoadService extends IntentService {
         Log.v(LOG_TAG, "onHandleIntent");
         
         Intent broadcasetIntent = new Intent();
+        
+        boolean success = downloadRss();
+        broadcasetIntent.setAction(
+                success ? ACTION_DOWMLOAD_SUCCESS : ACTION_DOWMLOAD_FAILED );
+        
+        sendBroadcast(broadcasetIntent);
+    }
+    
+    private boolean downloadRss() {
+        boolean success = false;
         try {
             URL url = new URL(RSS_URL_STRING);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -53,18 +63,16 @@ public class RSSDownLoadService extends IntentService {
                 // Close http connection.
                 connection.disconnect();
                 
+                success = true;
                 Log.v(LOG_TAG, mRssContent);
-                
-                broadcasetIntent.setAction(ACTION_DOWMLOAD_SUCCESS);
-            } else {
-                broadcasetIntent.setAction(ACTION_DOWMLOAD_FAILED);
-            }
-                
+            } 
         } catch (IOException e1) {
             e1.printStackTrace();
-            broadcasetIntent.setAction(ACTION_DOWMLOAD_FAILED);
         }
-        sendBroadcast(broadcasetIntent);
+        return success;
+    }
+    
+    private void parseXml() {
     }
 
 }
