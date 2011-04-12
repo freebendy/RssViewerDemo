@@ -1,6 +1,6 @@
 package com.roadmap.activity;
 
-import com.roadmap.activity.R;
+import com.roadmap.R;
 
 import android.app.Activity;
 import android.os.Bundle;
