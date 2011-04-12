@@ -4,5 +4,9 @@
         name="corpname">Tieto China Co., Ltd.</string>
     <string
         name="app_name">News Viewer</string>
-    <string name="logoname">Tieto</string>
+    <string
+        name="logoname">Tieto</string>
+    <string
+        name="dl_failed">Fail to download the Rss!</string>
+    <string name="dl_finished">Download is finished.</string>
 </resources>

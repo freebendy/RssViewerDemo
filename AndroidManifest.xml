@@ -19,7 +19,7 @@
                     android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.RSSDownLoadService"></service>
+        <service android:name=".service.RSSDownLoadService"/>
 
     </application>
 </manifest>
