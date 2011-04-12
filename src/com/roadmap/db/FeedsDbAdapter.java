@@ -1,5 +1,7 @@
 package com.roadmap.db;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -121,6 +123,44 @@ public class FeedsDbAdapter {
 
         return mDb.insert(DATABASE_TABLE, null, initialValues);
     }
+    
+    /**
+     * Create messages using the Message list object provided. If the messages 
+     * are successfully created return true, otherwise return false to indicate 
+     * failure.
+     * 
+     * @param messages the Message list object of the messages
+     * @return true or false if failed
+     */
+    public boolean createMessages(List<Message> messages) {
+        
+        mDb.beginTransaction();
+        boolean ret = true;
+        
+        for (Message message : messages) {
+            ContentValues initialValues = new ContentValues();
+            initialValues.put(KEY_TITLE, message.getTitle());
+            initialValues.put(KEY_LINK, message.getLink());
+            initialValues.put(KEY_SOURCE, message.getSource());
+            initialValues.put(KEY_CATEGORY, message.getCategory());
+            initialValues.put(KEY_DATE, message.getDate());
+            initialValues.put(KEY_DESCRIPTION, message.getDescription());
+            initialValues.put(KEY_IMAGEURL, message.getImageUrl());
+            initialValues.put(KEY_IMAGETEXT, message.getImageText());
+            
+            if (mDb.insert(DATABASE_TABLE, null, initialValues) == -1) {
+                ret = false;
+                break;
+            }
+        }
+        
+        if (ret) {
+            mDb.setTransactionSuccessful();
+        }
+        mDb.endTransaction();
+
+        return ret;
+    }
 
     /**
      * Delete the message with the given rowId
@@ -128,7 +168,7 @@ public class FeedsDbAdapter {
      * @param rowId id of message to delete
      * @return true if deleted, false otherwise
      */
-    public boolean deleteNote(long rowId) {
+    public boolean deleteMessage(long rowId) {
 
         return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
     }
@@ -149,7 +189,7 @@ public class FeedsDbAdapter {
      * @return Cursor positioned to matching message, if found
      * @throws SQLException if message could not be found/retrieved
      */
-    public Cursor fetchNote(long rowId) throws SQLException {
+    public Cursor fetchMessage(long rowId) throws SQLException {
 
         Cursor mCursor =
             mDb.query(true, DATABASE_TABLE, mAllColumns, KEY_ROWID + "=" + rowId,
@@ -170,7 +210,7 @@ public class FeedsDbAdapter {
      * @param message the Message object of the message
      * @return true if the message was successfully updated, false otherwise
      */
-    public boolean updateNote(long rowId, Message message) {
+    public boolean updateMessage(long rowId, Message message) {
         ContentValues args = new ContentValues();
         args.put(KEY_TITLE, message.getTitle());
         args.put(KEY_LINK, message.getLink());
@@ -182,5 +222,14 @@ public class FeedsDbAdapter {
         args.put(KEY_IMAGETEXT, message.getImageText());
 
         return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+    }
+    
+    /**
+     * Clear the table
+     * 
+     * @return true if the table was clear, false otherwise
+     */
+    public boolean clear() {
+        return mDb.delete(DATABASE_TABLE, null, null) > 0;
     }
 }
