@@ -19,7 +19,11 @@
                     android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.RSSDownLoadService"/>
+        <service
+            android:name=".service.RSSDownLoadService" />
+        <provider  
+            android:name=".db.FeedsProvider"
+            android:authorities="com.roadmap.db.FeedsProvider"></provider>
 
     </application>
 </manifest>

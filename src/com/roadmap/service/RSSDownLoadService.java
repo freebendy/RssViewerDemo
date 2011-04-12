@@ -55,7 +55,6 @@ public class RSSDownLoadService extends IntentService {
                 // Get the data.
                 while (((inputLine = buffer.readLine()) != null))  
                 {  
-                    //我们在每一行后面加上一个"\n"来换行  
                     mRssContent += inputLine;  
                 }
                 // Close InputStreamReader.
