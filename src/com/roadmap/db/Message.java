@@ -2,14 +2,14 @@ package com.roadmap.db;
 
 public class Message implements Comparable<Message> {
 
-    private String mTitle;
-    private String mLink;
-    private String mSource;
-    private String mCategory;
-    private String mDate;
-    private String mDescription;
-    private String mImageUrl;
-    private String mImageText;
+    private String mTitle ="";
+    private String mLink ="";
+    private String mSource ="";
+    private String mCategory ="";
+    private String mDate ="";
+    private String mDescription ="";
+    private String mImageUrl ="";
+    private String mImageText ="";
     
     
     public int compareTo(Message another) {

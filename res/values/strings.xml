@@ -8,5 +8,13 @@
         name="logoname">Tieto</string>
     <string
         name="dl_failed">Fail to download the Rss!</string>
-    <string name="dl_finished">Download is finished.</string>
+    <string
+        name="dl_finished">Download is finished.</string>
+    <string
+        name="xml_parse_failed">Fail to parse the xml file!</string>
+    <string
+        name="persist_failed">Fail to persist the data!</string>
+    <string
+        name="xml_parse_success">Parse xml sucessful.</string>
+    <string name="persist_success">Persist data successful.</string>
 </resources>

@@ -42,7 +42,7 @@ public class FeedsDbAdapter {
         "create table feeds (_id integer primary key autoincrement, "
         + "title text not null, link text not null, "
         + "source text not null, category text not null, "
-        + "pubdate text not null, description text not null, "
+        + "date text not null, description text not null, "
         + "imageurl text not null, imagetext text not null );";
 
     private static final String DATABASE_NAME = "feedsdb";
@@ -92,12 +92,14 @@ public class FeedsDbAdapter {
      * @throws SQLException if the database could be neither opened or created
      */
     public FeedsDbAdapter open() throws SQLException {
+        Log.v(LOG_TAG, "open");
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         return this;
     }
 
     public void close() {
+        Log.v(LOG_TAG, "close");
         mDbHelper.close();
     }
 
@@ -133,6 +135,10 @@ public class FeedsDbAdapter {
      * @return true or false if failed
      */
     public boolean createMessages(List<Message> messages) {
+        Log.v(LOG_TAG, "createMessages");
+        if (messages != null && messages.isEmpty()) {
+            return false;
+        }
         
         mDb.beginTransaction();
         boolean ret = true;
@@ -179,6 +185,7 @@ public class FeedsDbAdapter {
      * @return Cursor over all messages
      */
     public Cursor fetchAllMessages() {
+        Log.v(LOG_TAG, "fetchAllMessages");
         return mDb.query(DATABASE_TABLE, mAllColumns, null, null, null, null, null);
     }
 
@@ -230,6 +237,7 @@ public class FeedsDbAdapter {
      * @return true if the table was clear, false otherwise
      */
     public boolean clear() {
+        Log.v(LOG_TAG, "clear");
         return mDb.delete(DATABASE_TABLE, null, null) > 0;
     }
 }
