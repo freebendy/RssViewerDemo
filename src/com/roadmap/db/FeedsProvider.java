@@ -43,7 +43,7 @@ public class FeedsProvider extends ContentProvider {
         Log.v(LOG_TAG, "query");
 
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(DatabaseHelper.DATABASE_NAME);
+        qb.setTables(DatabaseHelper.DATABASE_TABLE);
 
         switch (mUriMatcher.match(uri)) {
         case FEEDS:

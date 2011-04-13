@@ -16,5 +16,7 @@
         name="persist_failed">Fail to persist the data!</string>
     <string
         name="xml_parse_success">Parse xml sucessful.</string>
-    <string name="persist_success">Persist data successful.</string>
+    <string
+        name="persist_success">Persist data successful.</string>
+    <string name="no_feeds">No Feeds Found.</string>
 </resources>

@@ -29,7 +29,7 @@ public class StartUpActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.startup);
         
         mDownloadReceiver = new BroadcastReceiver() {
             @Override
@@ -61,6 +61,9 @@ public class StartUpActivity extends Activity {
                             RSSDownLoadService.OPERATION_FAILED);
                     if (stateCode == RSSDownLoadService.OPERATION_SUCCESS) {
                         Toast.makeText(StartUpActivity.this, R.string.persist_success, Toast.LENGTH_SHORT).show();
+                        Intent rssViewIntent = new Intent(StartUpActivity.this, RSSViewerActivity.class);
+                        startActivity(rssViewIntent);
+                        StartUpActivity.this.finish();
                     } else {
                         showDialog(DIALOG_PERSIST_FAILED_ID);
                     }
