@@ -2,75 +2,23 @@ package com.roadmap.db;
 
 import java.util.List;
 
+import com.roadmap.NewsViewer.FeedColumns;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class FeedsDbAdapter {
     
     private static final String LOG_TAG = "roadmap.FeedsDbAdapter";
-
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_LINK = "link";
-//    public static final String KEY_GUIID = "guid";
-//    public static final String KEY_PERMALINK = "permalink";
-    public static final String KEY_SOURCE = "source";
-    public static final String KEY_CATEGORY = "category";
-    public static final String KEY_DATE = "date";
-    public static final String KEY_DESCRIPTION = "description";
-    public static final String KEY_IMAGEURL = "imageurl";
-    public static final String KEY_IMAGETEXT = "imagetext";
-//    public static final String KEY_CREDIT = "credit";
-//    public static final String KEY_CREDITROLE = "creditrole";
-    public static final String KEY_ROWID = "_id";
-    
-    private String[] mAllColumns = new String[] {KEY_ROWID, KEY_TITLE,
-            KEY_LINK, KEY_SOURCE, KEY_CATEGORY, KEY_DATE, KEY_DESCRIPTION, 
-            KEY_IMAGEURL, KEY_IMAGETEXT};
     
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
-    
-    /**
-     * Database creation sql statement
-     */
-    private static final String DATABASE_CREATE =
-        "create table feeds (_id integer primary key autoincrement, "
-        + "title text not null, link text not null, "
-        + "source text not null, category text not null, "
-        + "date text not null, description text not null, "
-        + "imageurl text not null, imagetext text not null );";
-
-    private static final String DATABASE_NAME = "feedsdb";
-    private static final String DATABASE_TABLE = "feeds";
-    private static final int DATABASE_VERSION = 1;
 
     private final Context mCtx;
-    
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-
-            db.execSQL(DATABASE_CREATE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS feeds");
-            onCreate(db);
-        }
-    }
 
     /**
      * Constructor - takes the context to allow the database to be
@@ -103,6 +51,15 @@ public class FeedsDbAdapter {
         mDbHelper.close();
     }
 
+    /**
+     * Clear the table
+     * 
+     * @return true if the table was clear, false otherwise
+     */
+    public boolean clear() {
+        Log.v(LOG_TAG, "clear");
+        return mDb.delete(DatabaseHelper.DATABASE_TABLE, null, null) > 0;
+    }
 
     /**
      * Create a new message using the Message object provided. If the message is
@@ -114,16 +71,16 @@ public class FeedsDbAdapter {
      */
     public long createMessage(Message message) {
         ContentValues initialValues = new ContentValues();
-        initialValues.put(KEY_TITLE, message.getTitle());
-        initialValues.put(KEY_LINK, message.getLink());
-        initialValues.put(KEY_SOURCE, message.getSource());
-        initialValues.put(KEY_CATEGORY, message.getCategory());
-        initialValues.put(KEY_DATE, message.getDate());
-        initialValues.put(KEY_DESCRIPTION, message.getDescription());
-        initialValues.put(KEY_IMAGEURL, message.getImageUrl());
-        initialValues.put(KEY_IMAGETEXT, message.getImageText());
+        initialValues.put(FeedColumns.TITLE, message.getTitle());
+        initialValues.put(FeedColumns.LINK, message.getLink());
+        initialValues.put(FeedColumns.SOURCE, message.getSource());
+        initialValues.put(FeedColumns.CATEGORY, message.getCategory());
+        initialValues.put(FeedColumns.DATE, message.getDate());
+        initialValues.put(FeedColumns.DESCRIPTION, message.getDescription());
+        initialValues.put(FeedColumns.IMAGEURL, message.getImageUrl());
+        initialValues.put(FeedColumns.IMAGETEXT, message.getImageText());
 
-        return mDb.insert(DATABASE_TABLE, null, initialValues);
+        return mDb.insert(DatabaseHelper.DATABASE_TABLE, null, initialValues);
     }
     
     /**
@@ -145,16 +102,16 @@ public class FeedsDbAdapter {
         
         for (Message message : messages) {
             ContentValues initialValues = new ContentValues();
-            initialValues.put(KEY_TITLE, message.getTitle());
-            initialValues.put(KEY_LINK, message.getLink());
-            initialValues.put(KEY_SOURCE, message.getSource());
-            initialValues.put(KEY_CATEGORY, message.getCategory());
-            initialValues.put(KEY_DATE, message.getDate());
-            initialValues.put(KEY_DESCRIPTION, message.getDescription());
-            initialValues.put(KEY_IMAGEURL, message.getImageUrl());
-            initialValues.put(KEY_IMAGETEXT, message.getImageText());
+            initialValues.put(FeedColumns.TITLE, message.getTitle());
+            initialValues.put(FeedColumns.LINK, message.getLink());
+            initialValues.put(FeedColumns.SOURCE, message.getSource());
+            initialValues.put(FeedColumns.CATEGORY, message.getCategory());
+            initialValues.put(FeedColumns.DATE, message.getDate());
+            initialValues.put(FeedColumns.DESCRIPTION, message.getDescription());
+            initialValues.put(FeedColumns.IMAGEURL, message.getImageUrl());
+            initialValues.put(FeedColumns.IMAGETEXT, message.getImageText());
             
-            if (mDb.insert(DATABASE_TABLE, null, initialValues) == -1) {
+            if (mDb.insert(DatabaseHelper.DATABASE_TABLE, null, initialValues) == -1) {
                 ret = false;
                 break;
             }
@@ -176,7 +133,8 @@ public class FeedsDbAdapter {
      */
     public boolean deleteMessage(long rowId) {
 
-        return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.delete(DatabaseHelper.DATABASE_TABLE, 
+                FeedColumns._ID + "=" + rowId, null) > 0;
     }
 
     /**
@@ -186,7 +144,8 @@ public class FeedsDbAdapter {
      */
     public Cursor fetchAllMessages() {
         Log.v(LOG_TAG, "fetchAllMessages");
-        return mDb.query(DATABASE_TABLE, mAllColumns, null, null, null, null, null);
+        return mDb.query(DatabaseHelper.DATABASE_TABLE, 
+                FeedColumns.ALL_COLUMNS, null, null, null, null, null);
     }
 
     /**
@@ -199,7 +158,8 @@ public class FeedsDbAdapter {
     public Cursor fetchMessage(long rowId) throws SQLException {
 
         Cursor mCursor =
-            mDb.query(true, DATABASE_TABLE, mAllColumns, KEY_ROWID + "=" + rowId,
+            mDb.query(true, DatabaseHelper.DATABASE_TABLE, 
+                    FeedColumns.ALL_COLUMNS, FeedColumns._ID + "=" + rowId,
                     null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -219,25 +179,17 @@ public class FeedsDbAdapter {
      */
     public boolean updateMessage(long rowId, Message message) {
         ContentValues args = new ContentValues();
-        args.put(KEY_TITLE, message.getTitle());
-        args.put(KEY_LINK, message.getLink());
-        args.put(KEY_SOURCE, message.getSource());
-        args.put(KEY_CATEGORY, message.getCategory());
-        args.put(KEY_DATE, message.getDate());
-        args.put(KEY_DESCRIPTION, message.getDescription());
-        args.put(KEY_IMAGEURL, message.getImageUrl());
-        args.put(KEY_IMAGETEXT, message.getImageText());
+        args.put(FeedColumns.TITLE, message.getTitle());
+        args.put(FeedColumns.LINK, message.getLink());
+        args.put(FeedColumns.SOURCE, message.getSource());
+        args.put(FeedColumns.CATEGORY, message.getCategory());
+        args.put(FeedColumns.DATE, message.getDate());
+        args.put(FeedColumns.DESCRIPTION, message.getDescription());
+        args.put(FeedColumns.IMAGEURL, message.getImageUrl());
+        args.put(FeedColumns.IMAGETEXT, message.getImageText());
 
-        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        return mDb.update(DatabaseHelper.DATABASE_TABLE, args, 
+                FeedColumns._ID + "=" + rowId, null) > 0;
     }
     
-    /**
-     * Clear the table
-     * 
-     * @return true if the table was clear, false otherwise
-     */
-    public boolean clear() {
-        Log.v(LOG_TAG, "clear");
-        return mDb.delete(DATABASE_TABLE, null, null) > 0;
-    }
 }

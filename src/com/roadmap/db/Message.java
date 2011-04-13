@@ -6,7 +6,7 @@ public class Message implements Comparable<Message> {
     private String mLink ="";
     private String mSource ="";
     private String mCategory ="";
-    private String mDate ="";
+    private long mDate = 0;
     private String mDescription ="";
     private String mImageUrl ="";
     private String mImageText ="";
@@ -85,7 +85,7 @@ public class Message implements Comparable<Message> {
     /**
      * @param date the date to set
      */
-    public void setDate(String date) {
+    public void setDate(long date) {
         mDate = date;
     }
 
@@ -93,7 +93,7 @@ public class Message implements Comparable<Message> {
     /**
      * @return the date
      */
-    public String getDate() {
+    public long getDate() {
         return mDate;
     }
 

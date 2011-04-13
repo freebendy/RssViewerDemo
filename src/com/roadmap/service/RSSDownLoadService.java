@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -64,6 +66,11 @@ public class RSSDownLoadService extends IntentService {
         Log.v(LOG_TAG, "onHandleIntent: " + action);
         
         if (action.equals(ACTION_DOWMLOAD)) {
+            
+            mFeedsDbAdapter.open();
+            mFeedsDbAdapter.clear();
+            mFeedsDbAdapter.close();
+            
             boolean success = downloadRss();
             
             Intent downloadIntent = new Intent();
@@ -127,7 +134,7 @@ public class RSSDownLoadService extends IntentService {
         return success;
     }
     
-    private List<Message> parseXml() throws XmlPullParserException, IOException {
+    private List<Message> parseXml() throws XmlPullParserException, IOException, ParseException {
         Log.v(LOG_TAG, "parseXml");
         XmlPullParserFactory xppFactory = XmlPullParserFactory.newInstance();
         
@@ -161,7 +168,9 @@ public class RSSDownLoadService extends IntentService {
                     } else if (currentTagName.equalsIgnoreCase(TAG_CATEGORY)) {
                         currentMessage.setCategory(xpp.nextText());
                     } else if (currentTagName.equalsIgnoreCase(TAG_PUBDATE)) {
-                        currentMessage.setDate(xpp.nextText());
+                        String date = xpp.nextText();
+                        long dateLong = Date.parse(date);
+                        currentMessage.setDate(dateLong);
                     } else if (currentTagName.equalsIgnoreCase(TAG_DESCRIPTION)) {
                         currentMessage.setDescription(xpp.nextText());
                     } else if (currentTagName.equalsIgnoreCase(TAG_MEDIA_TEXT)) {
