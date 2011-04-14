@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/feed_item_bg_shape">
+    >
+    <!--android:background="@drawable/feed_item_bg_shape"--> 
   
     <ImageView
         android:id="@+id/image"
@@ -17,9 +18,10 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_weight="1.0"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="left"
+        android:paddingTop="6dip"
+        android:paddingBottom="6dip"
         android:paddingLeft="6dip"
-        android:paddingRight="6dip" 
-        android:layout_gravity="center_vertical"/>
+        android:paddingRight="6dip" />
 </LinearLayout>

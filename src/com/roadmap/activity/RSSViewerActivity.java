@@ -6,6 +6,7 @@ import com.roadmap.R;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
@@ -45,5 +46,9 @@ public class RSSViewerActivity extends ListActivity {
             new SimpleCursorAdapter(this, R.layout.feeds_row, cursor,
                 new String[] { FeedColumns.TITLE }, new int[] { R.id.title });
         setListAdapter(adapter);
+    }
+    
+    private Bitmap loadImageFromNetwork(String url) {
+        return null;
     }
 }
