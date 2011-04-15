@@ -21,6 +21,7 @@ public class RSSViewerActivity extends ListActivity {
     private static final String[] PROJECTION = new String[] {
         FeedColumns._ID, // 0
         FeedColumns.TITLE, // 1
+        FeedColumns.IMAGEURL, // 2
     };
     
     @Override
@@ -42,13 +43,13 @@ public class RSSViewerActivity extends ListActivity {
                 FeedColumns.DEFAULT_SORT_ORDER);
 
         // Used to map notes entries from the database to views
-        SimpleCursorAdapter adapter = 
-            new SimpleCursorAdapter(this, R.layout.feeds_row, cursor,
-                new String[] { FeedColumns.TITLE }, new int[] { R.id.title });
+//        SimpleCursorAdapter adapter = 
+//            new SimpleCursorAdapter(this, R.layout.feeds_row, cursor,
+//                new String[] { FeedColumns.TITLE }, new int[] { R.id.title });
+        
+        RSSListAdapter adapter = new RSSListAdapter(this, cursor);
+        
         setListAdapter(adapter);
     }
-    
-    private Bitmap loadImageFromNetwork(String url) {
-        return null;
-    }
+
 }

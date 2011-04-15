@@ -9,10 +9,13 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dip"
         android:gravity="center_vertical"
-        android:paddingLeft="6dip"
-        android:src="@drawable/default_image" />
+        android:paddingTop="3dip"
+        android:paddingBottom="3dip"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip" />
+        <!--android:src="@drawable/default_image" -->
 
     <TextView
         android:id="@+id/title"
@@ -20,8 +23,8 @@
         android:layout_weight="1.0"
         android:layout_height="match_parent"
         android:gravity="left"
-        android:paddingTop="6dip"
-        android:paddingBottom="6dip"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip" />
+        android:paddingTop="3dip"
+        android:paddingBottom="3dip"
+        android:paddingLeft="3dip"
+        android:paddingRight="3dip" />
 </LinearLayout>
