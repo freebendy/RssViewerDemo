@@ -12,9 +12,7 @@
         android:layout_height="80dip"
         android:gravity="center_vertical"
         android:paddingTop="3dip"
-        android:paddingBottom="3dip"
-        android:paddingLeft="3dip"
-        android:paddingRight="3dip" />
+        android:paddingBottom="3dip" />
         <!--android:src="@drawable/default_image" -->
 
     <TextView
