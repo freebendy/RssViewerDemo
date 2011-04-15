@@ -268,13 +268,13 @@ public class ImageDownloader {
 //    private static final int DELAY_BEFORE_PURGE = HARD_CACHE_CAPACITY * 3 * 1000; // in milliseconds
 
     // Hard cache, with a fixed maximum capacity and a life duration
-    private final HashMap<String, Bitmap> mHardBitmapCache =
+    private static final HashMap<String, Bitmap> sHardBitmapCache =
         new LinkedHashMap<String, Bitmap>(HARD_CACHE_CAPACITY / 2, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(LinkedHashMap.Entry<String, Bitmap> eldest) {
             if (size() > HARD_CACHE_CAPACITY) {
                 // Entries push-out of hard reference cache are transferred to soft reference cache
-                mSoftBitmapCache.put(eldest.getKey(), new SoftReference<Bitmap>(eldest.getValue()));
+                sSoftBitmapCache.put(eldest.getKey(), new SoftReference<Bitmap>(eldest.getValue()));
                 return true;
             } else
                 return false;
@@ -282,7 +282,7 @@ public class ImageDownloader {
     };
 
     // Soft cache for bitmaps kicked out of hard cache
-    private final static ConcurrentHashMap<String, SoftReference<Bitmap>> mSoftBitmapCache =
+    private static final ConcurrentHashMap<String, SoftReference<Bitmap>> sSoftBitmapCache =
         new ConcurrentHashMap<String, SoftReference<Bitmap>>(HARD_CACHE_CAPACITY / 2);
 
 //    private final Handler mPurgeHandler = new Handler();
@@ -300,8 +300,8 @@ public class ImageDownloader {
     private void addBitmapToCache(String aUrl, Bitmap aBitmap) {
         Log.v(LOG_TAG, "addBitmapToCache: Url = " + aUrl );
         if (aBitmap != null) {
-            synchronized (mHardBitmapCache) {
-                mHardBitmapCache.put(aUrl, aBitmap);
+            synchronized (sHardBitmapCache) {
+                sHardBitmapCache.put(aUrl, aBitmap);
             }
         }
     }
@@ -313,19 +313,19 @@ public class ImageDownloader {
     private Bitmap getBitmapFromCache(String aUrl) {
         Log.v(LOG_TAG, "getBitmapFromCache: Url = " + aUrl );
         // First try the hard reference cache
-        synchronized (mHardBitmapCache) {
-            final Bitmap bitmap = mHardBitmapCache.get(aUrl);
+        synchronized (sHardBitmapCache) {
+            final Bitmap bitmap = sHardBitmapCache.get(aUrl);
             if (bitmap != null) {
                 // Bitmap found in hard cache
                 // Move element to first position, so that it is removed last
-                mHardBitmapCache.remove(aUrl);
-                mHardBitmapCache.put(aUrl, bitmap);
+                sHardBitmapCache.remove(aUrl);
+                sHardBitmapCache.put(aUrl, bitmap);
                 return bitmap;
             }
         }
 
         // Then try the soft reference cache
-        SoftReference<Bitmap> bitmapReference = mSoftBitmapCache.get(aUrl);
+        SoftReference<Bitmap> bitmapReference = sSoftBitmapCache.get(aUrl);
         if (bitmapReference != null) {
             final Bitmap bitmap = bitmapReference.get();
             if (bitmap != null) {
@@ -333,7 +333,7 @@ public class ImageDownloader {
                 return bitmap;
             } else {
                 // Soft reference has been Garbage Collected
-                mSoftBitmapCache.remove(aUrl);
+                sSoftBitmapCache.remove(aUrl);
             }
         }
 
@@ -345,8 +345,8 @@ public class ImageDownloader {
      * efficiency reasons, the cache will automatically be cleared after a certain inactivity delay.
      */
 //    public void clearCache() {
-//        mHardBitmapCache.clear();
-//        mSoftBitmapCache.clear();
+//        sHardBitmapCache.clear();
+//        sSoftBitmapCache.clear();
 //    }
 
     /**
