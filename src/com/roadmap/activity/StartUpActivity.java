@@ -16,21 +16,21 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class StartUpActivity extends Activity {
-    
+
     private static final String LOG_TAG = "roadmap.StartUpActivity";
-    
+
     private static final int DIALOG_DL_FAILED_ID = 0;
     private static final int DIALOG_PARSE_FAILED_ID = 1;
     private static final int DIALOG_PERSIST_FAILED_ID = 2;
-    
+
     public BroadcastReceiver mDownloadReceiver;
-    
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startup);
-        
+
         mDownloadReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -39,7 +39,7 @@ public class StartUpActivity extends Activity {
 
                 if (action.equals(RSSDownLoadService.ACTION_DOWMLOAD)) {
                     int stateCode = intent.getIntExtra(
-                            RSSDownLoadService.STATE_CODE, 
+                            RSSDownLoadService.STATE_CODE,
                             RSSDownLoadService.OPERATION_FAILED);
                     if (stateCode == RSSDownLoadService.OPERATION_SUCCESS) {
                         Toast.makeText(StartUpActivity.this, R.string.dl_finished, Toast.LENGTH_SHORT).show();
@@ -48,7 +48,7 @@ public class StartUpActivity extends Activity {
                     }
                 } else if (action.equals(RSSDownLoadService.ACTION_XML_PARSE)) {
                     int stateCode = intent.getIntExtra(
-                            RSSDownLoadService.STATE_CODE, 
+                            RSSDownLoadService.STATE_CODE,
                             RSSDownLoadService.OPERATION_FAILED);
                     if (stateCode == RSSDownLoadService.OPERATION_SUCCESS) {
                         Toast.makeText(StartUpActivity.this, R.string.xml_parse_success, Toast.LENGTH_SHORT).show();
@@ -57,7 +57,7 @@ public class StartUpActivity extends Activity {
                     }
                 } else if (action.equals(RSSDownLoadService.ACTION_DATA_PERSIST)) {
                     int stateCode = intent.getIntExtra(
-                            RSSDownLoadService.STATE_CODE, 
+                            RSSDownLoadService.STATE_CODE,
                             RSSDownLoadService.OPERATION_FAILED);
                     if (stateCode == RSSDownLoadService.OPERATION_SUCCESS) {
                         Toast.makeText(StartUpActivity.this, R.string.persist_success, Toast.LENGTH_SHORT).show();
@@ -70,50 +70,56 @@ public class StartUpActivity extends Activity {
                 }
             }
         };
-        
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(RSSDownLoadService.ACTION_DOWMLOAD);
         filter.addAction(RSSDownLoadService.ACTION_XML_PARSE);
         filter.addAction(RSSDownLoadService.ACTION_DATA_PERSIST);
         registerReceiver(mDownloadReceiver, filter);
-        
+
         Intent intent = new Intent(this, RSSDownLoadService.class);
         intent.setAction(RSSDownLoadService.ACTION_DOWMLOAD);
         startService(intent);
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.v(LOG_TAG, "onDestroy");
         unregisterReceiver(mDownloadReceiver);
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id) {
         Log.v(LOG_TAG, "onCreateDialog");
-        Dialog dialog = null;
-        int messageId;
+        int messageId = -1;
+
         switch (id) {
         case DIALOG_DL_FAILED_ID:
             messageId = R.string.dl_failed;
+            break;
         case DIALOG_PARSE_FAILED_ID:
             messageId = R.string.xml_parse_failed;
+            break;
         case DIALOG_PERSIST_FAILED_ID:
             messageId = R.string.persist_failed;
+            break;
+        default:
+            break;
+        }
+
+        Dialog dialog = null;
+        if ( messageId > -1 ) {
             AlertDialog.Builder builder = new AlertDialog.Builder(StartUpActivity.this);
             builder.setMessage(messageId)
                    .setCancelable(false)
-                   .setPositiveButton("Close", 
+                   .setPositiveButton("Close",
                            new DialogInterface.OnClickListener() {
                                public void onClick(DialogInterface dialog, int id) {
                                    StartUpActivity.this.finish();
                                }
                    });
             dialog = builder.create();
-            break;
-        default:
-            break;
         }
         return dialog;
     }

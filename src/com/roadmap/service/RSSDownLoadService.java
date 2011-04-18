@@ -23,7 +23,7 @@ import com.roadmap.db.FeedsDbAdapter;
 import com.roadmap.db.Message;
 
 public class RSSDownLoadService extends IntentService {
-    
+
     public static final String TAG_CHANNEL = "channel";
     public static final String TAG_ITEM = "item";
     public static final String TAG_TITLE = "title";
@@ -34,51 +34,51 @@ public class RSSDownLoadService extends IntentService {
     public static final String TAG_DESCRIPTION = "description";
     public static final String TAG_MEDIA_CONTENT = "media:content";
     public static final String TAG_MEDIA_TEXT = "media:text";
-    
+
     public static final String ACTION_DOWMLOAD = "com.roadmap.service.ACTION_DOWMLOAD";
-    
+
     public static final String ACTION_XML_PARSE = "com.roadmap.service.ACTION_XML_PARSE";
-    
+
     public static final String ACTION_DATA_PERSIST = "com.roadmap.service.ACTION_DATA_PERSIST";
-    
+
     public static final String STATE_CODE = "statecode";
-    
+
     public static final int OPERATION_FAILED = -1;
     public static final int OPERATION_SUCCESS = 0;
-    
+
     private static final String LOG_TAG = "roadmap.RSSDownLoadService";
-    
+
     private static final String RSS_URL_STRING = "http://rss.news.yahoo.com/rss/topstories";
-    
+
     private String mRssContent = "";
-    
+
     private FeedsDbAdapter mFeedsDbAdapter;
-    
+
     public RSSDownLoadService() {
         super("RSSDownLoadService");
         mFeedsDbAdapter = new FeedsDbAdapter(this);
     }
-    
+
     @Override
     protected void onHandleIntent(Intent intent) {
         String action = intent.getAction();
-        
+
         Log.v(LOG_TAG, "onHandleIntent: " + action);
-        
+
         if (action.equals(ACTION_DOWMLOAD)) {
-            
+
             mFeedsDbAdapter.open();
             mFeedsDbAdapter.clear();
             mFeedsDbAdapter.close();
-            
+
             boolean success = downloadRss();
-            
+
             Intent downloadIntent = new Intent();
             downloadIntent.setAction(ACTION_DOWMLOAD);
             downloadIntent.putExtra(STATE_CODE,
                     success ? OPERATION_SUCCESS : OPERATION_FAILED);
             sendBroadcast(downloadIntent);
-            
+
             try {
                 List<Message> messageList = parseXml();
                 Intent parseIntent = new Intent();
@@ -90,15 +90,15 @@ public class RSSDownLoadService extends IntentService {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }       
+        }
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v(LOG_TAG, "onDestroy");
     }
-    
+
     private boolean downloadRss() {
         Log.v(LOG_TAG, "downloadRss");
         boolean success = false;
@@ -106,53 +106,53 @@ public class RSSDownLoadService extends IntentService {
             URL url = new URL(RSS_URL_STRING);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             int reCode = connection.getResponseCode();
-            
+
             if (HttpURLConnection.HTTP_OK == reCode)
             {
-                InputStreamReader in = new InputStreamReader(connection.getInputStream());  
+                InputStreamReader in = new InputStreamReader(connection.getInputStream());
                 // Create the BufferedReader.
                 BufferedReader buffer = new BufferedReader(in);
                 mRssContent = "";
                 String inputLine = null;
                 // Get the data.
-                while (((inputLine = buffer.readLine()) != null))  
-                {  
-                    mRssContent += inputLine;  
+                while (((inputLine = buffer.readLine()) != null))
+                {
+                    mRssContent += inputLine;
                 }
                 // Close InputStreamReader.
-                in.close();  
+                buffer.close();
                 // Close http connection.
                 connection.disconnect();
-                
+
                 success = true;
 //                Log.v(LOG_TAG, mRssContent);
-                
-            } 
+
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         }
         return success;
     }
-    
+
     private List<Message> parseXml() throws XmlPullParserException, IOException, ParseException {
         Log.v(LOG_TAG, "parseXml");
         XmlPullParserFactory xppFactory = XmlPullParserFactory.newInstance();
-        
+
         XmlPullParser xpp = xppFactory.newPullParser();
         xpp.setInput( new StringReader(mRssContent) );
-        
+
         List<Message> messageList = null;
         String currentTagName = null;
         Message currentMessage = null;
-        
+
         int eventType = xpp.getEventType();
         boolean done = false;
         while (eventType != XmlPullParser.END_DOCUMENT && !done) {
-            
+
             if(eventType == XmlPullParser.START_DOCUMENT) {
                 messageList = new ArrayList<Message>();
             } else if(eventType == XmlPullParser.START_TAG) {
-                currentTagName = xpp.getName(); 
+                currentTagName = xpp.getName();
                 if (currentTagName.equalsIgnoreCase(TAG_ITEM) ) {
                  currentMessage = new Message();
                 } else if (currentMessage!= null) {
@@ -192,7 +192,7 @@ public class RSSDownLoadService extends IntentService {
 
         return messageList;
     }
-    
+
     private void persistData(List<Message> messages) {
         Log.v(LOG_TAG, "persistData begin");
         mFeedsDbAdapter.open();
