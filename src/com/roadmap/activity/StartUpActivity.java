@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 public class StartUpActivity extends Activity {
@@ -29,6 +30,9 @@ public class StartUpActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        hideTitle();
+
         setContentView(R.layout.startup);
 
         mDownloadReceiver = new BroadcastReceiver() {
@@ -122,5 +126,9 @@ public class StartUpActivity extends Activity {
             dialog = builder.create();
         }
         return dialog;
+    }
+
+    private void hideTitle() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 }
