@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -190,6 +191,8 @@ public class RSSDownLoadService extends IntentService {
             eventType = xpp.next();
         }
 
+//        Collections.sort(messageList);
+//        Collections.reverse(messageList);
         return messageList;
     }
 

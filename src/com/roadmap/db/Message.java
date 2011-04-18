@@ -10,13 +10,19 @@ public class Message implements Comparable<Message> {
     private String mDescription ="";
     private String mImageUrl ="";
     private String mImageText ="";
-    
-    
-    public int compareTo(Message another) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
 
+
+    public int compareTo(Message another) {
+        int ret = 1;
+        if (another != null) {
+            if (mDate < another.mDate) {
+                ret = -1;
+            } else if (mDate == another.mDate) {
+                ret = 0;
+            }
+        }
+        return ret;
+    }
 
     /**
      * @param title the title to set
@@ -144,5 +150,5 @@ public class Message implements Comparable<Message> {
     public String getImageText() {
         return mImageText;
     }
-    
+
 }
