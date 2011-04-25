@@ -7,13 +7,11 @@ import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class RSSViewerActivity extends ListActivity {
 

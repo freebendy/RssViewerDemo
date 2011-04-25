@@ -28,11 +28,11 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class ImageDownloader {
-    
+
     private static final String LOG_TAG = "roadmap.ImageDownloader";
-    
+
     private Context mContext;
-    
+
     public ImageDownloader(Context aContext ) {
         mContext = aContext;
     }
@@ -77,7 +77,7 @@ public class ImageDownloader {
             task.execute(aUrl);
         }
     }
-    
+
     /**
      * Returns true if the current download has been canceled or if there was no download in
      * progress on this image view.
@@ -99,7 +99,7 @@ public class ImageDownloader {
         }
         return true;
     }
-    
+
     /**
      * @param aImageView Any imageView
      * @return Retrieve the currently active download task (if any) associated with this imageView.
@@ -116,7 +116,7 @@ public class ImageDownloader {
         }
         return null;
     }
-    
+
     Bitmap downloadBitmap(String aUrl) {
         Log.v(LOG_TAG, "downloadBitmap" );
         // AndroidHttpClient is not allowed to be used from the main thread
@@ -163,7 +163,7 @@ public class ImageDownloader {
         }
         return null;
     }
-    
+
     /*
      * An InputStream that skips the exact number of bytes provided, unless it reaches EOF.
      */
@@ -190,7 +190,7 @@ public class ImageDownloader {
             return totalBytesSkipped;
         }
     }
-    
+
     /**
      * The actual AsyncTask that will asynchronously download the image.
      */
@@ -227,7 +227,7 @@ public class ImageDownloader {
             if (mImageViewReference != null) {
                 ImageView imageView = mImageViewReference.get();
                 BitmapDownloaderTask bitmapDownloaderTask = getBitmapDownloaderTask(imageView);
-                
+
                 // Change bitmap only if this process is still associated with it
                 if (this == bitmapDownloaderTask) {
                     imageView.setImageBitmap(aBitmap);
@@ -235,7 +235,7 @@ public class ImageDownloader {
             }
         }
     }
-    
+
     /**
      * A fake Drawable that will be attached to the imageView while the download is in progress.
      *
@@ -256,20 +256,25 @@ public class ImageDownloader {
             return mBitmapDownloaderTaskReference.get();
         }
     }
-    
+
     /*
      * Cache-related fields and methods.
-     * 
+     *
      * We use a hard and a soft cache. A soft reference cache is too aggressively cleared by the
      * Garbage Collector.
      */
-    
+
     private static final int HARD_CACHE_CAPACITY = 20;
 //    private static final int DELAY_BEFORE_PURGE = HARD_CACHE_CAPACITY * 3 * 1000; // in milliseconds
 
     // Hard cache, with a fixed maximum capacity and a life duration
     private static final HashMap<String, Bitmap> sHardBitmapCache =
         new LinkedHashMap<String, Bitmap>(HARD_CACHE_CAPACITY / 2, 0.75f, true) {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected boolean removeEldestEntry(LinkedHashMap.Entry<String, Bitmap> eldest) {
             if (size() > HARD_CACHE_CAPACITY) {
@@ -339,7 +344,7 @@ public class ImageDownloader {
 
         return null;
     }
- 
+
     /**
      * Clears the image cache used internally to improve performance. Note that for memory
      * efficiency reasons, the cache will automatically be cleared after a certain inactivity delay.
