@@ -20,16 +20,16 @@ import android.util.Log;
 public class FeedsProvider extends ContentProvider {
 
     private static final String LOG_TAG = "roadmap.FeedsProvider";
-    
+
     private static final int FEEDS = 1;
     private static final int FEED_ID = 2;
-    
+
     private static UriMatcher mUriMatcher;
-    
+
     private static HashMap<String, String> mFeedsProjectionMap;
-    
+
     private DatabaseHelper mDatabaseHelper;
-    
+
     @Override
     public boolean onCreate() {
         Log.v(LOG_TAG, "onCreate");
@@ -94,12 +94,12 @@ public class FeedsProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         Log.v(LOG_TAG, "insert");
-        
+
         // Validate the requested uri
         if (mUriMatcher.match(uri) != FEEDS) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        
+
         if (values != null) {
             SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
             long rowId = db.insert(DatabaseHelper.DATABASE_TABLE, null, values);
@@ -161,12 +161,12 @@ public class FeedsProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
-    
+
     static {
         mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         mUriMatcher.addURI(NewsViewer.AUTHORITY, "feeds", FEEDS);
         mUriMatcher.addURI(NewsViewer.AUTHORITY, "feeds/#", FEED_ID);
-        
+
         mFeedsProjectionMap = new HashMap<String, String>();
         mFeedsProjectionMap.put(FeedColumns._ID, FeedColumns._ID);
         mFeedsProjectionMap.put(FeedColumns.TITLE, FeedColumns.TITLE);

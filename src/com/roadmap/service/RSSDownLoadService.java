@@ -76,20 +76,30 @@ public class RSSDownLoadService extends IntentService {
 
             Intent downloadIntent = new Intent();
             downloadIntent.setAction(ACTION_DOWMLOAD);
-            downloadIntent.putExtra(STATE_CODE,
-                    success ? OPERATION_SUCCESS : OPERATION_FAILED);
-            sendBroadcast(downloadIntent);
+            if (success) {
+                downloadIntent.putExtra(STATE_CODE, OPERATION_SUCCESS);
+                sendBroadcast(downloadIntent);
+            } else {
+                downloadIntent.putExtra(STATE_CODE, OPERATION_FAILED);
+                sendBroadcast(downloadIntent);
+                return;
+            }
 
+            List<Message> messageList = null;
+            Intent parseIntent = new Intent();
+            parseIntent.setAction(ACTION_XML_PARSE);
             try {
-                List<Message> messageList = parseXml();
-                Intent parseIntent = new Intent();
-                parseIntent.setAction(ACTION_XML_PARSE);
+                messageList = parseXml();
                 parseIntent.putExtra(STATE_CODE, OPERATION_SUCCESS);
-                sendBroadcast(parseIntent);
-                persistData(messageList);
+
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                parseIntent.putExtra(STATE_CODE, OPERATION_FAILED);
+            }
+            sendBroadcast(parseIntent);
+
+            if (messageList != null) {
+                persistData(messageList);
             }
         }
     }
